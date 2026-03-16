@@ -1,74 +1,176 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# 🔎 Open Source Search & Recommendation System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An intelligent search and recommendation system designed to help developers discover useful open-source repositories more efficiently.
 
-## Available Scripts
+This project improves repository discovery by integrating **semantic search**, **query refinement**, and **cross-encoder re-ranking** techniques.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+# 📌 Overview
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Finding relevant open-source projects is often difficult when using traditional keyword-based search systems.
+This project aims to improve search quality by combining **semantic understanding** with **ranking techniques**.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The system analyzes repository information and returns more meaningful search results to users.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+# 🎯 Motivation
 
-### `npm run build`
+Many developers struggle to find suitable open-source repositories using simple keyword searches.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This project addresses that problem by introducing:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* Semantic-based repository search
+* Intelligent ranking algorithms
+* Interactive query refinement
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+These techniques allow users to find more relevant and high-quality open-source projects.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+# ✨ Key Features
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+🔎 **Semantic Search**
+Search repositories based on meaning rather than exact keywords.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+📊 **Cross-Encoder Re-ranking**
+Improve search result relevance using advanced ranking models.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+🔁 **Interactive Query Refinement**
+Users can refine their search queries for better results.
 
-## Learn More
+💡 **Repository Recommendation**
+Suggest related open-source projects based on search results.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+🖥 **Web-based Interface**
+User-friendly UI built with React.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+# 🏗 System Architecture
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The system consists of a **frontend interface**, **backend API**, and **database layer**.
 
-### Analyzing the Bundle Size
+```
+User
+  │
+  ▼
+React Frontend
+  │
+  ▼
+FastAPI Backend
+  │
+  ▼
+Search & Ranking Engine
+  │
+  ▼
+Repository Database
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+# 🛠 Tech Stack
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Frontend
 
-### Advanced Configuration
+* ⚛️ React
+* Axios
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Backend
 
-### Deployment
+* ⚡ FastAPI
+* Python
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Database
 
-### `npm run build` fails to minify
+* 🗄 MySQL
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# OpenSourceSearchEngine
->>>>>>> 584cf437abecef63151050774beac09f5affbdb2
+## Search / ML
+
+* Semantic Search
+* Cross-Encoder Re-ranking
+
+---
+
+# 📂 Project Structure
+
+```
+open_source_recommendation
+│
+├── backend
+│   ├── main.py
+│   ├── models.py
+│   ├── db.py
+│   └── requirements.txt
+│
+├── public
+├── src
+│   ├── App.js
+│   └── components
+│
+├── package.json
+└── README.md
+```
+
+---
+
+# ⚙️ Installation
+
+## 1️⃣ Backend Setup
+
+```
+pip install -r backend/requirements.txt
+```
+
+Run FastAPI server:
+
+```
+uvicorn backend.main:app --reload
+```
+
+---
+
+## 2️⃣ Frontend Setup
+
+Install dependencies:
+
+```
+npm install
+```
+
+Run React development server:
+
+```
+npm start
+```
+
+---
+
+# 🚀 Usage
+
+1️⃣ Start the backend server
+2️⃣ Start the frontend server
+3️⃣ Open the web interface in your browser
+
+You can now search for open-source repositories using the system.
+
+---
+
+# 🔮 Future Work
+
+* Improve recommendation accuracy
+* Integrate GitHub API
+* Add personalized recommendations
+* Deploy the system to a cloud environment
+
+---
+
+# 👨‍💻 Author
+
+**JiHoon Yoo**
+
+Software Engineering Student
+Sungkyunkwan University
+
+---

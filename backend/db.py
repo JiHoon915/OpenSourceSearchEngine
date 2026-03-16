@@ -3,7 +3,8 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-load_dotenv()
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 MYSQL_HOST = os.getenv("MYSQL_HOST", "127.0.0.1")
 MYSQL_PORT = os.getenv("MYSQL_PORT", "3306")

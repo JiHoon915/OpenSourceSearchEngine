@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from db import Base
+from backend.db import Base
+
 
 class Repository(Base):
     __tablename__ = "repositories"
@@ -18,7 +19,12 @@ class Repository(Base):
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     fetched_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
 
-    readme = relationship("Readme", back_populates="repo", uselist=False, cascade="all, delete-orphan")
+    readme = relationship(
+        "Readme",
+        back_populates="repo",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
 
 class Readme(Base):

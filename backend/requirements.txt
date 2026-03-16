@@ -1,3 +1,11 @@
 fastapi
 uvicorn[standard]
 pydantic
+sqlalchemy
+pymysql
+python-dotenv
+httpx
+sentence-transformers
+faiss-cpu
+numpy
+cryptography
