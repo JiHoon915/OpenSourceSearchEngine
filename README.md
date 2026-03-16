@@ -1,71 +1,138 @@
-# 🔎 Open Source Search & Recommendation System
+# 🔎 Open Source Semantic Search & Recommendation System
 
-An intelligent search and recommendation system designed to help developers discover useful open-source repositories more efficiently.
+An intelligent search system designed to help developers **discover relevant open-source repositories using natural language queries**.
 
-This project improves repository discovery by integrating **semantic search**, **query refinement**, and **cross-encoder re-ranking** techniques.
+This project enhances traditional keyword-based search by integrating **semantic search, repository embeddings, and vector similarity search**.
+
+The system analyzes **repository metadata and README content** to provide more meaningful search results.
 
 ---
 
 # 📌 Overview
 
-Finding relevant open-source projects is often difficult when using traditional keyword-based search systems.
-This project aims to improve search quality by combining **semantic understanding** with **ranking techniques**.
+Finding useful open-source repositories using traditional keyword search can be difficult because it relies heavily on exact word matches.
 
-The system analyzes repository information and returns more meaningful search results to users.
+This project improves repository discovery by applying **semantic understanding to repository descriptions and README files**.
+
+The system allows users to search repositories using **natural language queries**, and returns repositories that are **semantically similar to the query**.
+
+Example query:
+
+```
+react note taking app similar to notion
+```
+
+Instead of matching keywords only, the system finds repositories whose **README content and project descriptions are semantically related**.
 
 ---
 
 # 🎯 Motivation
 
-Many developers struggle to find suitable open-source repositories using simple keyword searches.
+Developers often struggle to find suitable open-source repositories using traditional keyword-based search.
 
-This project addresses that problem by introducing:
+Common problems include:
 
-* Semantic-based repository search
-* Intelligent ranking algorithms
-* Interactive query refinement
+- Relevant repositories not appearing in search results
+- Difficulty discovering projects with similar functionality
+- Inefficient exploration of open-source ecosystems
 
-These techniques allow users to find more relevant and high-quality open-source projects.
+This project aims to solve these issues by introducing:
+
+- **Semantic repository search**
+- **Vector similarity search**
+- **Natural language query support**
 
 ---
 
 # ✨ Key Features
 
-🔎 **Semantic Search**
-Search repositories based on meaning rather than exact keywords.
+### 🔎 Semantic Repository Search
 
-📊 **Cross-Encoder Re-ranking**
-Improve search result relevance using advanced ranking models.
+Search repositories using **natural language queries** instead of exact keywords.
 
-🔁 **Interactive Query Refinement**
-Users can refine their search queries for better results.
+Example:
 
-💡 **Repository Recommendation**
-Suggest related open-source projects based on search results.
+```
+react app similar to notion for note taking
+```
 
-🖥 **Web-based Interface**
-User-friendly UI built with React.
+The system finds repositories whose **README and description match the meaning of the query**.
+
+---
+
+### 🧠 Vector Similarity Search
+
+Repository information is converted into **vector embeddings** and indexed for fast similarity search using **FAISS (Facebook AI Similarity Search)**.
+
+---
+
+### 📦 GitHub Repository Ingestion
+
+The system retrieves repository data from GitHub including:
+
+- Repository metadata
+- Repository README content
+
+These data are stored in a database and used to build the search index.
+
+---
+
+### 🖥 Web-Based Interface
+
+A simple web interface built with **React** allows users to:
+
+- Search repositories
+- View repository information
+- Open GitHub repository pages directly
 
 ---
 
 # 🏗 System Architecture
 
-The system consists of a **frontend interface**, **backend API**, and **database layer**.
+The system consists of three main components:
 
 ```
 User
-  │
-  ▼
+ │
+ ▼
 React Frontend
-  │
-  ▼
+ │
+ ▼
 FastAPI Backend
-  │
-  ▼
-Search & Ranking Engine
-  │
-  ▼
-Repository Database
+ │
+ ├── GitHub API (Repository Data)
+ │
+ ├── MySQL Database
+ │
+ └── FAISS Vector Index
+       │
+       ▼
+Semantic Search Engine
+```
+
+---
+
+# ⚙️ Search Pipeline
+
+The semantic search pipeline works as follows:
+
+```
+User Query
+   │
+   ▼
+SentenceTransformer Embedding
+   │
+   ▼
+Vector Similarity Search
+   │
+   ▼
+Top-K Repository Results
+   │
+   ▼
+Repository Metadata Retrieval
+   │
+   ▼
+Search Results Display
 ```
 
 ---
@@ -74,22 +141,26 @@ Repository Database
 
 ## Frontend
 
-* ⚛️ React
-* Axios
+- React  
+- Axios  
 
 ## Backend
 
-* ⚡ FastAPI
-* Python
+- FastAPI  
+- Python  
 
 ## Database
 
-* 🗄 MySQL
+- MySQL  
 
-## Search / ML
+## Machine Learning / Search
 
-* Semantic Search
-* Cross-Encoder Re-ranking
+- SentenceTransformers  
+- FAISS (Vector Similarity Search)
+
+## External API
+
+- GitHub REST API
 
 ---
 
@@ -100,14 +171,21 @@ open_source_recommendation
 │
 ├── backend
 │   ├── main.py
-│   ├── models.py
 │   ├── db.py
+│   ├── models.py
+│   │
+│   ├── services
+│   │   └── embedding_service.py
+│   │
+│   ├── faiss_index
+│   │
 │   └── requirements.txt
 │
-├── public
 ├── src
 │   ├── App.js
-│   └── components
+│   └── App.css
+│
+├── public
 │
 ├── package.json
 └── README.md
@@ -117,13 +195,15 @@ open_source_recommendation
 
 # ⚙️ Installation
 
-## 1️⃣ Backend Setup
+## Backend Setup
+
+Install Python dependencies:
 
 ```
 pip install -r backend/requirements.txt
 ```
 
-Run FastAPI server:
+Run the backend server:
 
 ```
 uvicorn backend.main:app --reload
@@ -131,15 +211,15 @@ uvicorn backend.main:app --reload
 
 ---
 
-## 2️⃣ Frontend Setup
+## Frontend Setup
 
-Install dependencies:
+Install frontend dependencies:
 
 ```
 npm install
 ```
 
-Run React development server:
+Start the frontend development server:
 
 ```
 npm start
@@ -149,20 +229,60 @@ npm start
 
 # 🚀 Usage
 
-1️⃣ Start the backend server
-2️⃣ Start the frontend server
-3️⃣ Open the web interface in your browser
+Typical workflow:
 
-You can now search for open-source repositories using the system.
+### 1️⃣ Import repositories from GitHub
+
+```
+POST /ingest
+```
+
+Example request:
+
+```
+{
+  "query": "react note app",
+  "limit": 20
+}
+```
+
+---
+
+### 2️⃣ Build the search index
+
+```
+POST /build-index
+```
+
+This step generates vector embeddings for repositories and builds the search index.
+
+---
+
+### 3️⃣ Perform semantic search
+
+```
+GET /semantic-search
+```
+
+Example query:
+
+```
+/semantic-search?q=react note taking app similar to notion&limit=10
+```
+
+The system returns repositories that are **semantically similar to the query**.
 
 ---
 
 # 🔮 Future Work
 
-* Improve recommendation accuracy
-* Integrate GitHub API
-* Add personalized recommendations
-* Deploy the system to a cloud environment
+Planned improvements include:
+
+- Cross-Encoder re-ranking for better search accuracy
+- Interactive query refinement
+- Personalized repository recommendations
+- Automated repository ingestion pipeline
+- Scalable deployment in a cloud environment
 
 ---
 
@@ -170,7 +290,11 @@ You can now search for open-source repositories using the system.
 
 **JiHoon Yoo**
 
-Software Engineering Student
+Software Engineering  
 Sungkyunkwan University
 
 ---
+
+# 📜 License
+
+This project is developed for **academic and research purposes**.
