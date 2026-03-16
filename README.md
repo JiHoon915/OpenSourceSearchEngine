@@ -1,28 +1,23 @@
 # 🔎 Open Source Semantic Search & Recommendation System
+<img src="images/demo.png" width="700"/>
 
-An intelligent search system designed to help developers **discover relevant open-source repositories using natural language queries**.
+An intelligent search system designed to help developers discover relevant open-source repositories using natural language queries.
 
-This project enhances traditional keyword-based search by integrating **semantic search, repository embeddings, and vector similarity search**.
+This project improves traditional keyword-based search by combining semantic search, repository embeddings, vector similarity search, and a user-friendly web interface.
 
-The system analyzes **repository metadata and README content** to provide more meaningful search results.
+The system analyzes repository metadata and README content to return repositories that are more semantically related to a user's intent.
 
 ---
 
 # 📌 Overview
 
-Finding useful open-source repositories using traditional keyword search can be difficult because it relies heavily on exact word matches.
+Finding useful open-source repositories with traditional keyword search can be difficult because results often depend on exact word matches.
 
-This project improves repository discovery by applying **semantic understanding to repository descriptions and README files**.
+This project addresses that limitation by applying semantic understanding to repository descriptions and README files.
 
-The system allows users to search repositories using **natural language queries**, and returns repositories that are **semantically similar to the query**.
+Users can search with natural language queries, and the system returns repositories that are semantically similar to the query, rather than only matching exact keywords.
 
-Example query:
-
-```
-react note taking app similar to notion
-```
-
-Instead of matching keywords only, the system finds repositories whose **README content and project descriptions are semantically related**.
+Instead of matching a few keywords only, the system finds repositories whose README content, description, and overall project meaning are relevant to the query.
 
 ---
 
@@ -32,9 +27,13 @@ Developers often struggle to find suitable open-source repositories using tradit
 
 Common problems include:
 
-- Relevant repositories not appearing in search results
-- Difficulty discovering projects with similar functionality
-- Inefficient exploration of open-source ecosystems
+Relevant repositories not appearing in search results
+
+Difficulty discovering projects with similar functionality
+
+Over-reliance on exact keyword matches
+
+Inefficient exploration of open-source ecosystems
 
 This project aims to solve these issues by introducing:
 
@@ -49,12 +48,6 @@ This project aims to solve these issues by introducing:
 ### 🔎 Semantic Repository Search
 
 Search repositories using **natural language queries** instead of exact keywords.
-
-Example:
-
-```
-react app similar to notion for note taking
-```
 
 The system finds repositories whose **README and description match the meaning of the query**.
 
@@ -71,7 +64,7 @@ Repository information is converted into **vector embeddings** and indexed for f
 The system retrieves repository data from GitHub including:
 
 - Repository metadata
-- Repository README content
+- Repository description
 
 These data are stored in a database and used to build the search index.
 
@@ -79,36 +72,25 @@ These data are stored in a database and used to build the search index.
 
 ### 🖥 Web-Based Interface
 
-A simple web interface built with **React** allows users to:
+A **React-based** frontend provides an intuitive UI that allows users to:
 
-- Search repositories
-- View repository information
+- Enter natural language queries
+
+- Set the number of results to retrieve
+
+- Search repositories through the semantic search pipeline
+
+- View repository metadata in card format
+
 - Open GitHub repository pages directly
+
+- Clear stored repository data from the database
 
 ---
 
 # 🏗 System Architecture
 
-The system consists of three main components:
-
-```
-User
- │
- ▼
-React Frontend
- │
- ▼
-FastAPI Backend
- │
- ├── GitHub API (Repository Data)
- │
- ├── MySQL Database
- │
- └── FAISS Vector Index
-       │
-       ▼
-Semantic Search Engine
-```
+<img src="images/architecture.png" width="700"/>
 
 ---
 
@@ -135,6 +117,16 @@ Repository Metadata Retrieval
 Search Results Display
 ```
 
+Current backend search sequence:
+
+```
+POST /ingest
+   ↓
+POST /build-index
+   ↓
+GET /semantic-search
+```
+
 ---
 
 # 🛠 Tech Stack
@@ -143,11 +135,14 @@ Search Results Display
 
 - React  
 - Axios  
+- CSS
 
 ## Backend
 
 - FastAPI  
 - Python  
+- Pydantic
+- SQLAlchemy
 
 ## Database
 
@@ -195,12 +190,24 @@ open_source_recommendation
 
 # ⚙️ Installation
 
-## Backend Setup
+## 1. Clone the repository
 
-Install Python dependencies:
+```
+git clone https://github.com/JiHoon915/OpenSourceSearchEngine.git
+cd OpenSourceSearchEngine
+```
+
+## 2. Backend Setup
+Install backend dependencies:
 
 ```
 pip install -r backend/requirements.txt
+```
+
+Create a .env file in the project root and add your GitHub token:
+
+```
+GITHUB_TOKEN=your_github_token_here
 ```
 
 Run the backend server:
@@ -208,8 +215,6 @@ Run the backend server:
 ```
 uvicorn backend.main:app --reload
 ```
-
----
 
 ## Frontend Setup
 
@@ -232,45 +237,8 @@ npm start
 Typical workflow:
 
 ### 1️⃣ Import repositories from GitHub
-
-```
-POST /ingest
-```
-
-Example request:
-
-```
-{
-  "query": "react note app",
-  "limit": 20
-}
-```
-
----
-
 ### 2️⃣ Build the search index
-
-```
-POST /build-index
-```
-
-This step generates vector embeddings for repositories and builds the search index.
-
----
-
 ### 3️⃣ Perform semantic search
-
-```
-GET /semantic-search
-```
-
-Example query:
-
-```
-/semantic-search?q=react note taking app similar to notion&limit=10
-```
-
-The system returns repositories that are **semantically similar to the query**.
 
 ---
 
@@ -278,11 +246,11 @@ The system returns repositories that are **semantically similar to the query**.
 
 Planned improvements include:
 
-- Cross-Encoder re-ranking for better search accuracy
 - Interactive query refinement
+- More efficient indexing workflow
 - Personalized repository recommendations
-- Automated repository ingestion pipeline
 - Scalable deployment in a cloud environment
+- Search analytics and performance monitoring
 
 ---
 

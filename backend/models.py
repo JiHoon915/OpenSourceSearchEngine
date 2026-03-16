@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from backend.db import Base
@@ -13,6 +13,7 @@ class Repository(Base):
     html_url = Column(String(500), nullable=False)
     description = Column(Text, nullable=True)
     language = Column(String(100), nullable=True)
+    languages = Column(Text, nullable=True)  # JSON 문자열로 상위 3개 언어 저장
     stargazers_count = Column(Integer, nullable=False, default=0)
     updated_at = Column(DateTime, nullable=True)
 

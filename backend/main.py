@@ -5,6 +5,7 @@ from typing import List, Optional, Dict, Any
 from datetime import datetime
 import os
 import base64
+import json
 import httpx
 
 from dotenv import load_dotenv
@@ -47,6 +48,7 @@ class RepoItem(BaseModel):
     full_name: str
     description: Optional[str] = None
     language: Optional[str] = None
+    languages: Optional[List[str]] = None
     stargazers_count: int = 0
     html_url: str
     updated_at: Optional[str] = None
@@ -130,13 +132,49 @@ async def github_fetch_readme(owner: str, repo: str) -> str:
             return ""
 
 
+async def github_fetch_languages(languages_url: str) -> List[str]:
+    if not languages_url:
+        return []
+
+    async with httpx.AsyncClient(timeout=20) as client:
+        r = await client.get(languages_url, headers=_github_headers())
+
+        if r.status_code >= 400:
+            return []
+
+        data = r.json()
+        if not isinstance(data, dict):
+            return []
+
+        return list(data.keys())[:3]
+
+
 def preview_text(text: str, max_chars: int = 280) -> str:
     t = (text or "").strip().replace("\r\n", "\n")
     t = " ".join(t.split())
     return t[:max_chars]
 
 
-def upsert_repo_and_readme(db: Session, repo_json: Dict[str, Any], readme_text: str):
+def parse_languages(value: Optional[str]) -> List[str]:
+    if not value:
+        return []
+
+    try:
+        data = json.loads(value)
+        if isinstance(data, list):
+            return data[:3]
+    except Exception:
+        pass
+
+    return []
+
+
+def upsert_repo_and_readme(
+    db: Session,
+    repo_json: Dict[str, Any],
+    readme_text: str,
+    top_languages: List[str]
+):
     github_repo_id = repo_json.get("id")
     full_name = repo_json.get("full_name")
     if not github_repo_id or not full_name:
@@ -160,6 +198,7 @@ def upsert_repo_and_readme(db: Session, repo_json: Dict[str, Any], readme_text: 
     repo.description = raw_description
 
     repo.language = repo_json.get("language")
+    repo.languages = json.dumps(top_languages, ensure_ascii=False) if top_languages else None
     repo.stargazers_count = repo_json.get("stargazers_count", 0)
 
     updated_at_str = repo_json.get("updated_at")
@@ -195,7 +234,8 @@ async def ingest(req: IngestRequest):
             owner, name = full_name.split("/", 1)
 
             readme = await github_fetch_readme(owner, name)
-            ok = upsert_repo_and_readme(db, repo_json, readme)
+            top_languages = await github_fetch_languages(repo_json.get("languages_url", ""))
+            ok = upsert_repo_and_readme(db, repo_json, readme, top_languages)
             if ok:
                 ingested += 1
 
@@ -226,6 +266,7 @@ def build_index():
 Repository: {repo.full_name}
 Description: {repo.description or ""}
 Language: {repo.language or ""}
+Languages: {", ".join(parse_languages(repo.languages))}
 README: {rd.content if rd and rd.content else ""}
             """.strip()
 
@@ -249,7 +290,7 @@ README: {rd.content if rd and rd.content else ""}
 @app.get("/semantic-search", response_model=SemanticSearchResponse)
 def semantic_search(
     q: str = Query(..., min_length=1, description="Natural language query"),
-    limit: int = Query(10, ge=1, le=20),
+    limit: int = Query(10, ge=1, le=50),
 ):
     db = SessionLocal()
     try:
@@ -277,6 +318,7 @@ def semantic_search(
                     "full_name": repo.full_name,
                     "description": repo.description,
                     "language": repo.language,
+                    "languages": parse_languages(repo.languages),
                     "stargazers_count": repo.stargazers_count,
                     "html_url": repo.html_url,
                     "updated_at": repo.updated_at.isoformat() if repo.updated_at else None,
@@ -316,6 +358,7 @@ def list_repos(limit: int = 10):
                     "full_name": repo.full_name,
                     "description": repo.description,
                     "language": repo.language,
+                    "languages": parse_languages(repo.languages),
                     "stargazers_count": repo.stargazers_count,
                     "html_url": repo.html_url,
                     "updated_at": repo.updated_at.isoformat() if repo.updated_at else None,
@@ -324,5 +367,19 @@ def list_repos(limit: int = 10):
             )
 
         return {"items": items}
+    finally:
+        db.close()
+
+@app.delete("/clear-db")
+def clear_db():
+    db = SessionLocal()
+    try:
+        db.query(Readme).delete()
+        db.query(Repository).delete()
+        db.commit()
+        return {"message": "Database cleared successfully"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to clear database: {str(e)}")
     finally:
         db.close()
