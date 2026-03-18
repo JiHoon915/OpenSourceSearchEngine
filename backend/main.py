@@ -7,6 +7,7 @@ import os
 import base64
 import json
 import httpx
+import time
 
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
@@ -292,6 +293,7 @@ def semantic_search(
     q: str = Query(..., min_length=1, description="Natural language query"),
     limit: int = Query(10, ge=1, le=50),
 ):
+    start_time = time.perf_counter()
     db = SessionLocal()
     try:
         results = search_similar(q, top_k=limit)
@@ -326,6 +328,9 @@ def semantic_search(
                     "score": score,
                 }
             )
+
+        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        print(f"[semantic-search] query='{q}', limit={limit}, response_time_ms={elapsed_ms:.2f}")
 
         return {
             "query": q,
